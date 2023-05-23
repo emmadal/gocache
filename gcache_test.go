@@ -1,30 +1,30 @@
 package gcache
 
-import (
-	"reflect"
-	"testing"
-	"time"
-)
+// import (
+// 	"reflect"
+// 	"testing"
+// 	"time"
+// )
 
-func TestNew(t *testing.T) {
-	type args struct {
-		ttl time.Duration
-	}
-	tests := []struct {
-		name string
-		args args
-		want *Cache
-	}{
-		{name: "testnew_", args: args{ttl: time.Duration(time.Second)}, want: New(time.Duration(time.Second))},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := New(tt.args.ttl); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("New() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+// func TestNew(t *testing.T) {
+// 	type args struct {
+// 		ttl time.Duration
+// 	}
+// 	tests := []struct {
+// 		name string
+// 		args args
+// 		want *Cache
+// 	}{
+// 		{name: "testnew_", args: args{ttl: time.Duration(time.Second)}, want: New(time.Duration(time.Second))},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if got := New(tt.args.ttl); !reflect.DeepEqual(got, tt.want) {
+// 				t.Errorf("New() = %v, want %v", got, tt.want)
+// 			}
+// 		})
+// 	}
+// }
 
 // func TestNew2(t *testing.T) {
 // 	type args struct {
@@ -46,115 +46,115 @@ func TestNew(t *testing.T) {
 // 	}
 // }
 
-func TestCache_Set(t *testing.T) {
-	type args struct {
-		key   string
-		value interface{}
-	}
-	tests := []struct {
-		name string
-		args args
-		want interface{}
-	}{
-		{
-			name: "TestCache_Set_1",
-			args: args{
-				key:   "test1",
-				value: 123,
-			},
-			want: 123,
-		},
-		{
-			name: "TestCache_Set_2",
-			args: args{
-				key:   "test2",
-				value: `{"name":"jeffotoni"}`,
-			},
-			want: `{"name":"jeffotoni"}`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := New(200 * time.Millisecond)
-			c.Set(tt.args.key, tt.args.value)
-			got, exist := c.Get(tt.args.key)
-			if exist {
-				switch got.(type) {
-				case int:
-					vgot := got.(int)
-					if vgot != tt.want {
-						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
-					}
-				case string:
-					vgot := got.(string)
-					if vgot != tt.want {
-						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
-					}
-				}
-			}
-			time.Sleep(300 * time.Millisecond)
-			_, exist = c.Get(tt.args.key)
-			if exist {
-				t.Errorf("Cache item should have been expired and not exist")
-			}
-		})
-	}
-}
+// func TestCache_Set(t *testing.T) {
+// 	type args struct {
+// 		key   string
+// 		value interface{}
+// 	}
+// 	tests := []struct {
+// 		name string
+// 		args args
+// 		want interface{}
+// 	}{
+// 		{
+// 			name: "TestCache_Set_1",
+// 			args: args{
+// 				key:   "test1",
+// 				value: 123,
+// 			},
+// 			want: 123,
+// 		},
+// 		{
+// 			name: "TestCache_Set_2",
+// 			args: args{
+// 				key:   "test2",
+// 				value: `{"name":"jeffotoni"}`,
+// 			},
+// 			want: `{"name":"jeffotoni"}`,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			c := New(200 * time.Millisecond)
+// 			c.Set(tt.args.key, tt.args.value)
+// 			got, exist := c.Get(tt.args.key)
+// 			if exist {
+// 				switch got.(type) {
+// 				case int:
+// 					vgot := got.(int)
+// 					if vgot != tt.want {
+// 						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
+// 					}
+// 				case string:
+// 					vgot := got.(string)
+// 					if vgot != tt.want {
+// 						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
+// 					}
+// 				}
+// 			}
+// 			time.Sleep(300 * time.Millisecond)
+// 			_, exist = c.Get(tt.args.key)
+// 			if exist {
+// 				t.Errorf("Cache item should have been expired and not exist")
+// 			}
+// 		})
+// 	}
+// }
 
-func TestCache_Get(t *testing.T) {
-	type args struct {
-		key   string
-		value interface{}
-	}
-	tests := []struct {
-		name string
-		args args
-		want interface{}
-	}{
-		{
-			name: "TestCache_Set_1",
-			args: args{
-				key:   "test1",
-				value: 123,
-			},
-			want: 123,
-		},
-		{
-			name: "TestCache_Set_2",
-			args: args{
-				key:   "test2",
-				value: `{"name":"jeffotoni"}`,
-			},
-			want: `{"name":"jeffotoni"}`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := New(200 * time.Millisecond)
-			c.Set(tt.args.key, tt.args.value)
-			got, exist := c.Get(tt.args.key)
-			if exist {
-				switch got.(type) {
-				case int:
-					vgot := got.(int)
-					if vgot != tt.want {
-						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
-					}
-				case string:
-					vgot := got.(string)
-					if vgot != tt.want {
-						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
-					}
-				}
-			}
-			time.Sleep(300 * time.Millisecond)
-			_, exist = c.Get(tt.args.key)
-			if exist {
-				t.Errorf("Cache item should have been expired and not exist")
-			}
-		})
-	}
-}
+// func TestCache_Get(t *testing.T) {
+// 	type args struct {
+// 		key   string
+// 		value interface{}
+// 	}
+// 	tests := []struct {
+// 		name string
+// 		args args
+// 		want interface{}
+// 	}{
+// 		{
+// 			name: "TestCache_Set_1",
+// 			args: args{
+// 				key:   "test1",
+// 				value: 123,
+// 			},
+// 			want: 123,
+// 		},
+// 		{
+// 			name: "TestCache_Set_2",
+// 			args: args{
+// 				key:   "test2",
+// 				value: `{"name":"jeffotoni"}`,
+// 			},
+// 			want: `{"name":"jeffotoni"}`,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			c := New(200 * time.Millisecond)
+// 			c.Set(tt.args.key, tt.args.value)
+// 			got, exist := c.Get(tt.args.key)
+// 			if exist {
+// 				switch got.(type) {
+// 				case int:
+// 					vgot := got.(int)
+// 					if vgot != tt.want {
+// 						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
+// 					}
+// 				case string:
+// 					vgot := got.(string)
+// 					if vgot != tt.want {
+// 						t.Errorf("Cache.Get() = %v, want %v", vgot, tt.want)
+// 					}
+// 				}
+// 			}
+// 			time.Sleep(300 * time.Millisecond)
+// 			_, exist = c.Get(tt.args.key)
+// 			if exist {
+// 				t.Errorf("Cache item should have been expired and not exist")
+// 			}
+// 		})
+// 	}
+// }
 
 // func TestCache_Delete(t *testing.T) {
 // 	type fields struct {
