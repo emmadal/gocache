@@ -60,11 +60,11 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 	c.mu.Unlock()
 	if exists {
 		if time.Now().After(item.ExpiresAt) {
-			delete(c.items, key)
-			if item.Index > 0 {
-				// heap.Remove(&c.heap, item.Index)
-				// c.Delete(key)
-			}
+			//delete(c.items, key)
+			// if item.Index > 0 {
+			// 	// heap.Remove(&c.heap, item.Index)
+			// 	// c.Delete(key)
+			// }
 			return nil, false
 		}
 		return item.Value, true
