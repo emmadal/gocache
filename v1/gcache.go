@@ -14,7 +14,7 @@ type Item struct {
 }
 
 type Cache struct {
-	mu    sync.Mutex
+	mu    sync.RWMutex
 	ttl   time.Duration
 	items map[string]*Item
 	heap  expirationHeap
@@ -37,7 +37,7 @@ func (c *Cache) Set(key string, value interface{}) {
 		ExpiresAt: time.Now().Add(c.ttl),
 	}
 	c.items[key] = item
-	heap.Push(&c.heap, item)
+	// heap.Push(&c.heap, item)
 	c.mu.Unlock()
 
 	// if exists {
@@ -95,7 +95,6 @@ func (c *Cache) evict() {
 	now := time.Now()
 	for len(c.heap) > 0 && c.heap[0].ExpiresAt.Before(now) {
 		item := heap.Pop(&c.heap).(*Item)
-
 		switch item.Value.(type) {
 		case string:
 			delete(c.items, item.Value.(string))
