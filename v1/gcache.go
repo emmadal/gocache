@@ -61,8 +61,8 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 		if time.Now().After(item.ExpiresAt) {
 			delete(c.items, key)
 			if item.Index > 0 {
-				//heap.Remove(&c.heap, item.Index)
-				c.Delete(key)
+				// heap.Remove(&c.heap, item.Index)
+				// c.Delete(key)
 			}
 			return nil, false
 		}
@@ -73,12 +73,12 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 
 func (c *Cache) Delete(key string) {
 	c.mu.Lock()
-	defer c.mu.Unlock()
-	item, exists := c.items[key]
+	_, exists := c.items[key]
 	if exists {
-		heap.Remove(&c.heap, item.Index)
+		//heap.Remove(&c.heap, item.Index)
 		delete(c.items, key)
 	}
+	c.mu.Unlock()
 }
 
 func (c *Cache) cleanEvic() {
