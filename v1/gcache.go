@@ -31,20 +31,26 @@ func New(ttl time.Duration) *Cache {
 
 func (c *Cache) Set(key string, value interface{}) {
 	c.mu.Lock()
-	item, exists := c.items[key]
-	c.mu.Unlock()
-	if exists {
-		item.Value = value
-		item.ExpiresAt = time.Now().Add(c.ttl)
-		//heap.Fix(&c.heap, item.Index)
-	} else {
-		item = &Item{
-			Value:     value,
-			ExpiresAt: time.Now().Add(c.ttl),
-		}
-		c.items[key] = item
-		//heap.Push(&c.heap, item)
+	//item, exists := c.items[key]
+	item := &Item{
+		Value:     value,
+		ExpiresAt: time.Now().Add(c.ttl),
 	}
+	c.items[key] = item
+	c.mu.Unlock()
+
+	// if exists {
+	// 	item.Value = value
+	// 	item.ExpiresAt = time.Now().Add(c.ttl)
+	// 	//heap.Fix(&c.heap, item.Index)
+	// } else {
+	// 	item = &Item{
+	// 		Value:     value,
+	// 		ExpiresAt: time.Now().Add(c.ttl),
+	// 	}
+	// 	c.items[key] = item
+	// 	//heap.Push(&c.heap, item)
+	// }
 }
 
 func (c *Cache) Get(key string) (interface{}, bool) {
@@ -56,6 +62,7 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 			delete(c.items, key)
 			if item.Index > 0 {
 				//heap.Remove(&c.heap, item.Index)
+				c.Delete(key)
 			}
 			return nil, false
 		}
