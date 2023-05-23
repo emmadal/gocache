@@ -25,7 +25,7 @@ func New(ttl time.Duration) *Cache {
 		ttl:   ttl,
 		items: make(map[string]*Item),
 	}
-	//go cache.cleanEvic()
+	go cache.cleanEvic()
 	return cache
 }
 
@@ -37,6 +37,7 @@ func (c *Cache) Set(key string, value interface{}) {
 		ExpiresAt: time.Now().Add(c.ttl),
 	}
 	c.items[key] = item
+	heap.Push(&c.heap, item)
 	c.mu.Unlock()
 
 	// if exists {
