@@ -49,8 +49,8 @@ func (c *Cache) Set(key string, value interface{}) {
 
 func (c *Cache) Get(key string) (interface{}, bool) {
 	c.mu.Lock()
-	defer c.mu.Unlock()
 	item, exists := c.items[key]
+	c.mu.Unlock()
 	if exists {
 		if time.Now().After(item.ExpiresAt) {
 			delete(c.items, key)
