@@ -36,14 +36,14 @@ func (c *Cache) Set(key string, value interface{}) {
 	if exists {
 		item.Value = value
 		item.ExpiresAt = time.Now().Add(c.ttl)
-		heap.Fix(&c.heap, item.Index)
+		//heap.Fix(&c.heap, item.Index)
 	} else {
 		item = &Item{
 			Value:     value,
 			ExpiresAt: time.Now().Add(c.ttl),
 		}
 		c.items[key] = item
-		heap.Push(&c.heap, item)
+		//heap.Push(&c.heap, item)
 	}
 }
 
@@ -55,7 +55,7 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 		if time.Now().After(item.ExpiresAt) {
 			delete(c.items, key)
 			if item.Index > 0 {
-				heap.Remove(&c.heap, item.Index)
+				//heap.Remove(&c.heap, item.Index)
 			}
 			return nil, false
 		}
