@@ -26,6 +26,26 @@ func TestNew(t *testing.T) {
 	}
 }
 
+// func TestNew2(t *testing.T) {
+// 	type args struct {
+// 		ttl time.Duration
+// 	}
+// 	tests := []struct {
+// 		name string
+// 		args args
+// 		want any
+// 	}{
+// 		{name: "testnew_", args: args{ttl: time.Duration(time.Second)}, want: New2(time.Duration(time.Second), time.Duration(time.Second))},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			if got := New(tt.args.ttl); !reflect.DeepEqual(got, tt.want) {
+// 				t.Errorf("New() = %v, want %v", got, tt.want)
+// 			}
+// 		})
+// 	}
+// }
+
 func TestCache_Set(t *testing.T) {
 	type args struct {
 		key   string

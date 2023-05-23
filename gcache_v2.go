@@ -43,14 +43,14 @@ func newCache2[K ~string, V any](expTime, cleanupInt time.Duration, item map[K]*
 
 func New2[K ~string, V any](expTime, cleanupTime time.Duration) *Cache2[K, V] {
 	items := make(map[K]*Item2[V])
-	c2 := newCache2(expTime, cleanupTime, items)
+	c := newCache2(expTime, cleanupTime, items)
 
 	if cleanupTime > 0 {
-		go c2.cleanup()
-		runtime.SetFinalizer(c2, stopCleanup[K, V])
+		go c.cleanup()
+		runtime.SetFinalizer(c, stopCleanup[K, V])
 	}
 
-	return &Cache2[K, V]{c2}
+	return &Cache2[K, V]{c}
 }
 
 func (c *Cache2[K, V]) Set2(key K, val V, d time.Duration) error {
