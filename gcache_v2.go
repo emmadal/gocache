@@ -13,25 +13,25 @@ const (
 	DefaultExpiration time.Duration = 0
 )
 
-type Item[V any] struct {
+type Item2[V any] struct {
 	object     V
 	expiration int64
 }
 
-type cache[K ~string, V any] struct {
+type cache2[K ~string, V any] struct {
 	mu         sync.RWMutex
-	items      map[K]*Item[V]
+	items      map[K]*Item2[V]
 	done       chan struct{}
 	expTime    time.Duration
 	cleanupInt time.Duration
 }
 
-type Cache[K ~string, V any] struct {
-	*cache[K, V]
+type Cache2[K ~string, V any] struct {
+	*cache2[K, V]
 }
 
-func newCache[K ~string, V any](expTime, cleanupInt time.Duration, item map[K]*Item[V]) *cache[K, V] {
-	c := &cache[K, V]{
+func newCache2[K ~string, V any](expTime, cleanupInt time.Duration, item map[K]*Item2[V]) *cache2[K, V] {
+	c := &cache2[K, V]{
 		mu:         sync.RWMutex{},
 		items:      item,
 		expTime:    expTime,
@@ -41,20 +41,20 @@ func newCache[K ~string, V any](expTime, cleanupInt time.Duration, item map[K]*I
 	return c
 }
 
-func New[K ~string, V any](expTime, cleanupTime time.Duration) *Cache[K, V] {
-	items := make(map[K]*Item[V])
-	c := newCache(expTime, cleanupTime, items)
+func New2[K ~string, V any](expTime, cleanupTime time.Duration) *Cache2[K, V] {
+	items := make(map[K]*Item2[V])
+	c2 := newCache2(expTime, cleanupTime, items)
 
 	if cleanupTime > 0 {
-		go c.cleanup()
-		runtime.SetFinalizer(c, stopCleanup[K, V])
+		go c2.cleanup()
+		runtime.SetFinalizer(c2, stopCleanup[K, V])
 	}
 
-	return &Cache[K, V]{c}
+	return &Cache2[K, V]{c2}
 }
 
-func (c *Cache[K, V]) Set(key K, val V, d time.Duration) error {
-	item, err := c.Get(key)
+func (c *Cache2[K, V]) Set2(key K, val V, d time.Duration) error {
+	item, err := c.Get2(key)
 	if item != nil && err == nil {
 		return fmt.Errorf("já existe um item com a chave '%v'. Use o método Atualizar", key)
 	}
@@ -63,7 +63,7 @@ func (c *Cache[K, V]) Set(key K, val V, d time.Duration) error {
 	return nil
 }
 
-func (c *Cache[K, V]) add(key K, val V, d time.Duration) error {
+func (c *Cache2[K, V]) add(key K, val V, d time.Duration) error {
 	var exp int64
 
 	if d == DefaultExpiration {
@@ -75,7 +75,7 @@ func (c *Cache[K, V]) add(key K, val V, d time.Duration) error {
 		exp = int64(NoExpiration)
 	}
 
-	item, err := c.Get(key)
+	item, err := c.Get2(key)
 	if item != nil && err != nil {
 		return fmt.Errorf("item com chave '%v' já existe", key)
 	}
@@ -88,7 +88,7 @@ func (c *Cache[K, V]) add(key K, val V, d time.Duration) error {
 	}
 
 	c.mu.Lock()
-	c.items[key] = &Item[V]{
+	c.items[key] = &Item2[V]{
 		object:     val,
 		expiration: exp,
 	}
@@ -96,7 +96,7 @@ func (c *Cache[K, V]) add(key K, val V, d time.Duration) error {
 
 	return nil
 }
-func (c *Cache[K, V]) Get(key K) (*Item[V], error) {
+func (c *Cache2[K, V]) Get2(key K) (*Item2[V], error) {
 	c.mu.RLock()
 	if item, ok := c.items[key]; ok {
 		if item.expiration > 0 {
@@ -113,7 +113,7 @@ func (c *Cache[K, V]) Get(key K) (*Item[V], error) {
 	return nil, fmt.Errorf("item com chave '%v' não encontrado", key)
 }
 
-func (it *Item[V]) Val() V {
+func (it *Item2[V]) Val() V {
 	var v V
 	if it != nil {
 		return it.object
@@ -121,8 +121,8 @@ func (it *Item[V]) Val() V {
 	return v
 }
 
-func (c *Cache[K, V]) IsExpired(key K) bool {
-	item, err := c.Get(key)
+func (c *Cache2[K, V]) IsExpired(key K) bool {
+	item, err := c.Get2(key)
 	if item != nil && err != nil {
 		if item.expiration > time.Now().UnixNano() {
 			return true
@@ -131,7 +131,7 @@ func (c *Cache[K, V]) IsExpired(key K) bool {
 	return false
 }
 
-func (c *cache[K, V]) cleanup() {
+func (c *cache2[K, V]) cleanup() {
 	tick := time.NewTicker(c.cleanupInt)
 
 	for {
@@ -145,7 +145,7 @@ func (c *cache[K, V]) cleanup() {
 	}
 }
 
-func (c *cache[K, V]) delete(key K) error {
+func (c *cache2[K, V]) delete(key K) error {
 	if _, ok := c.items[key]; ok {
 		delete(c.items, key)
 
@@ -155,7 +155,7 @@ func (c *cache[K, V]) delete(key K) error {
 	return fmt.Errorf("item com chave '%v' não existe", key)
 }
 
-func (c *cache[K, V]) DeleteExpired() error {
+func (c *cache2[K, V]) DeleteExpired() error {
 	var err error
 
 	now := time.Now().UnixNano()
@@ -174,6 +174,6 @@ func (c *cache[K, V]) DeleteExpired() error {
 	return errors.Unwrap(err)
 }
 
-func stopCleanup[K ~string, V any](c *cache[K, V]) {
+func stopCleanup[K ~string, V any](c *Cache2[K, V]) {
 	c.done <- struct{}{}
 }
