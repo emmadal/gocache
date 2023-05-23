@@ -25,14 +25,14 @@ func New(ttl time.Duration) *Cache {
 		ttl:   ttl,
 		items: make(map[string]*Item),
 	}
-	go cache.cleanEvic()
+	//go cache.cleanEvic()
 	return cache
 }
 
 func (c *Cache) Set(key string, value interface{}) {
 	c.mu.Lock()
-	defer c.mu.Unlock()
 	item, exists := c.items[key]
+	c.mu.Unlock()
 	if exists {
 		item.Value = value
 		item.ExpiresAt = time.Now().Add(c.ttl)
