@@ -31,10 +31,9 @@ func New(ttl time.Duration) *Cache {
 
 func (c *Cache) Set(key string, value interface{}) {
 	c.mu.Lock()
-	defer c.mu.Unlock()
 	item, exists := c.items[key]
+	c.mu.Unlock()
 	if exists {
-		// update value and reset expiration time
 		item.Value = value
 		item.ExpiresAt = time.Now().Add(c.ttl)
 		heap.Fix(&c.heap, item.Index)
@@ -50,8 +49,8 @@ func (c *Cache) Set(key string, value interface{}) {
 
 func (c *Cache) Get(key string) (interface{}, bool) {
 	c.mu.Lock()
-	defer c.mu.Unlock()
 	item, exists := c.items[key]
+	c.mu.Unlock()
 	if exists {
 		if time.Now().After(item.ExpiresAt) {
 			delete(c.items, key)
