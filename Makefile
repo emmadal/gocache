@@ -9,6 +9,6 @@ GOPRIVATE=github.com/jeffotoni/gcache
 update:
 	@echo "########## Compilando nossa API ... "
 	@rm -f go.*
-	go mod init github.com/jeffotoni/gcahe
+	go mod init github.com/jeffotoni/gcache
 	go mod tidy
 	@echo "done"
