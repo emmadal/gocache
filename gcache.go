@@ -1,23 +1,24 @@
 package gcache
 
 import (
-	"container/heap"
-	"strconv"
 	"sync"
 	"time"
 )
 
+const (
+	NoExpiration   time.Duration = -1
+	DefaultExpires time.Duration = 0
+)
+
 type Item struct {
-	Value     interface{}
-	ExpiresAt time.Time
-	Index     int // required by heap.Interface
+	Value   interface{} // 8 bytes on 64-bit systems
+	Expires int64       //  8 bytes
 }
 
 type Cache struct {
 	mu    sync.RWMutex
 	ttl   time.Duration
 	items map[string]*Item
-	heap  expirationHeap
 }
 
 func New(ttl time.Duration) *Cache {
@@ -25,46 +26,33 @@ func New(ttl time.Duration) *Cache {
 		ttl:   ttl,
 		items: make(map[string]*Item),
 	}
-	go cache.cleanEvic()
+	// go cache.cleanEvic()
 	return cache
 }
 
-func (c *Cache) Set(key string, value interface{}) {
+func (c *Cache) Set(key string, value interface{}, ttl time.Duration) {
+	var t int64
+	if ttl == DefaultExpires {
+		ttl = DefaultExpires
+	} else if ttl > 0 {
+		t = time.Now().Add(ttl).UnixNano()
+	}
+
 	c.mu.Lock()
-	//item, exists := c.items[key]
 	item := &Item{
-		Value:     value,
-		ExpiresAt: time.Now().Add(c.ttl),
+		Value:   value,
+		Expires: t,
 	}
 	c.items[key] = item
-	// heap.Push(&c.heap, item)
 	c.mu.Unlock()
-
-	// if exists {
-	// 	item.Value = value
-	// 	item.ExpiresAt = time.Now().Add(c.ttl)
-	// 	//heap.Fix(&c.heap, item.Index)
-	// } else {
-	// 	item = &Item{
-	// 		Value:     value,
-	// 		ExpiresAt: time.Now().Add(c.ttl),
-	// 	}
-	// 	c.items[key] = item
-	// 	//heap.Push(&c.heap, item)
-	// }
 }
 
 func (c *Cache) Get(key string) (interface{}, bool) {
-	c.mu.Lock()
+	c.mu.RLock()
 	item, exists := c.items[key]
-	c.mu.Unlock()
+	c.mu.RUnlock()
 	if exists {
-		if time.Now().After(item.ExpiresAt) {
-			//delete(c.items, key)
-			// if item.Index > 0 {
-			// 	// heap.Remove(&c.heap, item.Index)
-			// 	// c.Delete(key)
-			// }
+		if item.Expires > 0 && time.Now().UnixNano() > item.Expires {
 			return nil, false
 		}
 		return item.Value, true
@@ -76,62 +64,19 @@ func (c *Cache) Delete(key string) {
 	c.mu.Lock()
 	_, exists := c.items[key]
 	if exists {
-		//heap.Remove(&c.heap, item.Index)
 		delete(c.items, key)
 	}
 	c.mu.Unlock()
 }
 
-func (c *Cache) cleanEvic() {
+func (c *Cache) cleanCache() {
 	for {
 		time.Sleep(c.ttl)
-		c.evict()
+		c.clean()
 	}
 }
 
-func (c *Cache) evict() {
+func (c *Cache) clean() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	now := time.Now()
-	for len(c.heap) > 0 && c.heap[0].ExpiresAt.Before(now) {
-		item := heap.Pop(&c.heap).(*Item)
-		switch item.Value.(type) {
-		case string:
-			delete(c.items, item.Value.(string))
-		case int:
-			delete(c.items, strconv.Itoa(item.Value.(int)))
-		}
-	}
-}
-
-type expirationHeap []*Item
-
-func (h expirationHeap) Len() int {
-	return len(h)
-}
-
-func (h expirationHeap) Less(i, j int) bool {
-	return h[i].ExpiresAt.Before(h[j].ExpiresAt)
-}
-
-func (h expirationHeap) Swap(i, j int) {
-	h[i], h[j] = h[j], h[i]
-	h[i].Index = i
-	h[j].Index = j
-}
-
-func (h *expirationHeap) Push(x interface{}) {
-	n := len(*h)
-	item := x.(*Item)
-	item.Index = n
-	*h = append(*h, item)
-}
-
-func (h *expirationHeap) Pop() interface{} {
-	old := *h
-	n := len(old)
-	item := old[n-1]
-	item.Index = -1 // for safety
-	*h = old[0 : n-1]
-	return item
 }
