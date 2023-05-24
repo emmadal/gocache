@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	NoExpiration      time.Duration = -1
-	DefaultExpiration time.Duration = 0
+	NoExpiration   time.Duration = -1
+	Defaultexpires time.Duration = 0
 )
 
 type Item[V any] struct {
-	object     V
-	expiration int64
+	value   V
+	expires int64
 }
 
 type cache[K ~string, V any] struct {
@@ -64,13 +64,13 @@ func (c *Cache[K, V]) Set(key K, val V, d time.Duration) error {
 }
 
 func (c *Cache[K, V]) SetDefault(key K, val V) error {
-	return c.Set(key, val, DefaultExpiration)
+	return c.Set(key, val, Defaultexpires)
 }
 
 func (c *Cache[K, V]) add(key K, val V, d time.Duration) error {
 	var exp int64
 
-	if d == DefaultExpiration {
+	if d == Defaultexpires {
 		d = c.expTime
 	}
 	if d > 0 {
@@ -93,8 +93,8 @@ func (c *Cache[K, V]) add(key K, val V, d time.Duration) error {
 
 	c.mu.Lock()
 	c.items[key] = &Item[V]{
-		object:     val,
-		expiration: exp,
+		value:   val,
+		expires: exp,
 	}
 	c.mu.Unlock()
 
@@ -104,9 +104,9 @@ func (c *Cache[K, V]) add(key K, val V, d time.Duration) error {
 func (c *Cache[K, V]) Get(key K) (*Item[V], error) {
 	c.mu.RLock()
 	if item, ok := c.items[key]; ok {
-		if item.expiration > 0 {
+		if item.expires > 0 {
 			now := time.Now().UnixNano()
-			if now > item.expiration {
+			if now > item.expires {
 				c.mu.RUnlock()
 				return nil, fmt.Errorf("item with key '%v' expired", key)
 			}
@@ -121,7 +121,7 @@ func (c *Cache[K, V]) Get(key K) (*Item[V], error) {
 func (it *Item[V]) Val() V {
 	var v V
 	if it != nil {
-		return it.object
+		return it.value
 	}
 	return v
 }
@@ -158,7 +158,7 @@ func (c *cache[K, V]) DeleteExpired() error {
 
 	c.mu.Lock()
 	for k, item := range c.items {
-		if now > item.expiration && item.expiration != int64(NoExpiration) {
+		if now > item.expires && item.expires != int64(NoExpiration) {
 			if e := c.delete(k); e != nil {
 				err = errors.Join(err, e)
 			}
@@ -205,7 +205,7 @@ func (c *Cache[K, V]) MapToCache(m map[K]V, d time.Duration) error {
 func (c *Cache[K, V]) IsExpired(key K) bool {
 	item, err := c.Get(key)
 	if item != nil && err != nil {
-		if item.expiration > time.Now().UnixNano() {
+		if item.expires > time.Now().UnixNano() {
 			return true
 		}
 	}

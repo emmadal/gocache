@@ -7,41 +7,46 @@ import (
 
 const (
 	NoExpiration   time.Duration = -1
-	DefaultExpires time.Duration = 0
+	Defaultexpires time.Duration = 0
 )
 
 type Item struct {
-	Value   interface{} // 8 bytes on 64-bit systems
-	Expires int64       //  8 bytes
+	value   interface{} // 8 bytes on 64-bit systems
+	expires int64       // 8 bytes
 }
 
-type Cache struct {
+type cache struct {
 	mu    sync.RWMutex
 	ttl   time.Duration
 	items map[string]*Item
 }
 
+type Cache struct {
+	*cache
+}
+
 func New(ttl time.Duration) *Cache {
-	cache := &Cache{
-		ttl:   ttl,
-		items: make(map[string]*Item),
+	return &Cache{
+		cache: &cache{
+			ttl:   ttl,
+			items: make(map[string]*Item),
+		},
 	}
 	// go cache.cleanEvic()
-	return cache
 }
 
 func (c *Cache) Set(key string, value interface{}, ttl time.Duration) {
 	var t int64
-	if ttl == DefaultExpires {
-		ttl = DefaultExpires
+	if ttl == Defaultexpires {
+		ttl = Defaultexpires
 	} else if ttl > 0 {
 		t = time.Now().Add(ttl).UnixNano()
 	}
 
 	c.mu.Lock()
 	item := &Item{
-		Value:   value,
-		Expires: t,
+		value:   value,
+		expires: t,
 	}
 	c.items[key] = item
 	c.mu.Unlock()
@@ -52,10 +57,10 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 	item, exists := c.items[key]
 	c.mu.RUnlock()
 	if exists {
-		if item.Expires > 0 && time.Now().UnixNano() > item.Expires {
+		if item.expires > 0 && time.Now().UnixNano() > item.expires {
 			return nil, false
 		}
-		return item.Value, true
+		return item.value, true
 	}
 	return nil, false
 }

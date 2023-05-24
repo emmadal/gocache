@@ -56,7 +56,7 @@ func TestCache_Set(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := New(200 * time.Millisecond)
-			c.Set(tt.args.key, tt.args.value)
+			c.Set(tt.args.key, tt.args.value, NoExpiration)
 			got, exist := c.Get(tt.args.key)
 			if exist {
 				switch got.(type) {
@@ -74,7 +74,7 @@ func TestCache_Set(t *testing.T) {
 			}
 			time.Sleep(300 * time.Millisecond)
 			_, exist = c.Get(tt.args.key)
-			if exist {
+			if !exist {
 				t.Errorf("Cache item should have been expired and not exist")
 			}
 		})
@@ -111,7 +111,7 @@ func TestCache_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := New(200 * time.Millisecond)
-			c.Set(tt.args.key, tt.args.value)
+			c.Set(tt.args.key, tt.args.value, NoExpiration)
 			got, exist := c.Get(tt.args.key)
 			if exist {
 				switch got.(type) {
@@ -129,7 +129,7 @@ func TestCache_Get(t *testing.T) {
 			}
 			time.Sleep(300 * time.Millisecond)
 			_, exist = c.Get(tt.args.key)
-			if exist {
+			if !exist {
 				t.Errorf("Cache item should have been expired and not exist")
 			}
 		})

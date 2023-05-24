@@ -12,12 +12,10 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 )
 
-var c1 = gc1.New(10 * time.Second)
-var c2 = gc2.New[string, int](time.Duration(time.Minute), 0)
-
+var c1 = gc1.New(10 * time.Minute)
+var c2 = gc2.New[string, int](time.Duration(time.Minute*10), 0)
 var cache = gocache.New(10*time.Second, 1*time.Minute)
-
-var fcacheSize = 100 * 1024 * 1024
+var fcacheSize = 1024 * 1024 * 1024
 var fcache = freecache.NewCache(fcacheSize)
 
 func BenchmarkGcacheSet(b *testing.B) {
@@ -30,7 +28,7 @@ func BenchmarkGcacheSet(b *testing.B) {
 func BenchmarkGcacheSetGet(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		key := strconv.Itoa(i)
-		c1.Set(key, i, time.Duration(time.Minute))
+		c1.Set(key, i, time.Duration(10*time.Minute))
 		i, ok := c1.Get(key)
 		if !ok {
 			log.Printf("Não encontrei: %v", i)
