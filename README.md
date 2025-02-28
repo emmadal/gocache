@@ -66,7 +66,9 @@ func main() {
 
 ### 🚀 1-Second Benchmarks
 
+```go
 $ go test -bench=. -benchtime=1s
+```
 
 | **Implementation** | **Set Ops**    | **Set ns/op** | **Set/Get Ops** | **Set/Get ns/op** | **Observations**                      |
 |--------------------|----------------|---------------|-----------------|-------------------|---------------------------------------|
