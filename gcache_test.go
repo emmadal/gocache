@@ -112,3 +112,24 @@ func TestCache_Concurrency(t *testing.T) {
 	}
 	wg.Wait() // Wait for all reads to complete
 }
+
+// TestCacheExpiration test removal and if expired
+func TestCacheExpiration(t *testing.T) {
+	cache := New(10 * time.Minute)
+
+	key := "test_key"
+	value := "test_value"
+
+	// Adds an item with expiration in 1 millisecond
+	cache.Set(key, value, 1*time.Millisecond)
+
+	// Please wait for the item to expire.
+	time.Sleep(2 * time.Millisecond)
+
+	// Now when calling Get it should remove the item and return false
+	result, exists := cache.Get(key)
+
+	if exists {
+		t.Errorf("I expected the item to be expired and removed, but it still exists %v", result)
+	}
+}

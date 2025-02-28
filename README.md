@@ -1,6 +1,11 @@
 # ⚡ gocache – High-Performance 
 
-[![GoDoc](https://godoc.org/github.com/jeffotoni/gocache?status.svg)](https://godoc.org/github.com/jeffotoni/gocache) [![Go Report](https://goreportcard.com/badge/github.com/jeffotoni/gocache)](https://goreportcard.com/report/github.com/jeffotoni/gocache) [![License](https://img.shields.io/github/license/jeffotoni/gocache)](https://github.com/jeffotoni/gocache/blob/main/LICENSE) ![GitHub last commit](https://img.shields.io/github/last-commit/jeffotoni/gocache) ![GitHub contributors](https://img.shields.io/github/contributors/jeffotoni/gocache) ![GitHub forks](https://img.shields.io/github/forks/jeffotoni/gocache?style=social)  ![GitHub stars](https://img.shields.io/github/stars/jeffotoni/gocache) 
+[![GoDoc](https://godoc.org/github.com/jeffotoni/gocache?status.svg)](https://godoc.org/github.com/jeffotoni/gocache) [![Go Report](https://goreportcard.com/badge/github.com/jeffotoni/gocache)](https://goreportcard.com/report/github.com/jeffotoni/gocache) [![License](https://img.shields.io/github/license/jeffotoni/gocache)](https://github.com/jeffotoni/gocache/blob/main/LICENSE) ![GitHub last commit](https://img.shields.io/github/last-commit/jeffotoni/gocache) ![GitHub contributors](https://img.shields.io/github/contributors/jeffotoni/gocache)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jeffotoni/gocache/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/jeffotoni/gocache/tree/main) 
+![Coveralls](https://img.shields.io/coverallsCoverage/github/jeffotoni/gocache)
+![GitHub stars](https://img.shields.io/github/forks/jeffotoni/gocache?style=social) 
+![GitHub stars](https://img.shields.io/github/stars/jeffotoni/gocache)
+
 ---
 
 ## 🚀 About gocache
@@ -39,7 +44,16 @@ func main() {
 	// Store items in cache
 	cache.Set("key1", "Hello, gocache!", gocache.DefaultExpiration)
 	cache.Set("key2", 12345, gocache.DefaultExpiration)
-
+	
+	var myPerson = struct {
+		ID int
+		Name   string
+	}{
+		ID: 564,
+		Name:   "@jeffotoni",
+	}
+	cache.Set("key3", myPerson, gocache.DefaultExpiration)
+	
 	// Retrieve items
 	val, found := cache.Get("key1")
 	if found {
@@ -50,7 +64,12 @@ func main() {
 	if found {
 		fmt.Println("Found key2:", val)
 	}
-
+	
+	val, found = cache.Get("key3")
+	if found {
+		fmt.Println("Found key3:", val)
+	}
+	
 	// Deleting an item
 	cache.Delete("key1")
 
@@ -85,6 +104,8 @@ $ go test -bench=. -benchtime=1s
 | **gocache V9**     | 24,809,947      | 252.1 ns/op   | 13,225,228      | 275.7 ns/op   | 🏆 **Very fast write**, good read    |
 | **go-cache**       | 15,594,752      | 375.4 ns/op   | 14,289,182      | 269.7 ns/op   | 🚀 Excellent reads, slower writes    |
 | **freecache**      | 13,303,050      | 402.3 ns/op   | 8,903,779       | 421.4 ns/op   | ❌ Decent write, slow read           |
+
+#### 🚀 You can find all the benchmarks here [benchmark-gocache](https://github.com/jeffotoni/benchmark-gocache)
 
 # 🛠 API Reference
 
