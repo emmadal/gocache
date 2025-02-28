@@ -42,7 +42,15 @@ type Cache struct {
 }
 
 // New creates a new instance of Cache with a given TTL.
-func New(ttl time.Duration) *Cache {
+func New(ttlStr ...time.Duration) *Cache {
+	var ttl time.Duration
+	if len(ttlStr) > 0 {
+		// Use the first duration provided
+		ttl = ttlStr[0]
+	} else {
+		// Fallback to DefaultExpiration if no parameter is passed
+		ttl = DefaultExpiration
+	}
 	c := &Cache{ttl: ttl}
 	for i := 0; i < numShards; i++ {
 		c.shards[i] = &shard{
