@@ -1,19 +1,13 @@
-# ⚡ GoCache – High-Performance In-Memory Cache for Go
+# ⚡ gocache – High-Performance 
 
-[![GoDoc](https://godoc.org/github.com/jeffotoni/gocache?status.svg)](https://godoc.org/github.com/jeffotoni/gocache)  
-[![Go Report](https://goreportcard.com/badge/github.com/jeffotoni/gocache)](https://goreportcard.com/report/github.com/jeffotoni/gocache)  
-[![License](https://img.shields.io/github/license/jeffotoni/gocache)](https://github.com/jeffotoni/gocache/blob/main/LICENSE)  
-![GitHub last commit](https://img.shields.io/github/last-commit/jeffotoni/gocache)  
-![GitHub contributors](https://img.shields.io/github/contributors/jeffotoni/gocache) 
-![GitHub forks](https://img.shields.io/github/forks/jeffotoni/gocache?style=social) 
-![GitHub stars](https://img.shields.io/github/stars/jeffotoni/gocache) 
+[![GoDoc](https://godoc.org/github.com/jeffotoni/gocache?status.svg)](https://godoc.org/github.com/jeffotoni/gocache) [![Go Report](https://goreportcard.com/badge/github.com/jeffotoni/gocache)](https://goreportcard.com/report/github.com/jeffotoni/gocache) [![License](https://img.shields.io/github/license/jeffotoni/gocache)](https://github.com/jeffotoni/gocache/blob/main/LICENSE) ![GitHub last commit](https://img.shields.io/github/last-commit/jeffotoni/gocache) ![GitHub contributors](https://img.shields.io/github/contributors/jeffotoni/gocache) ![GitHub forks](https://img.shields.io/github/forks/jeffotoni/gocache?style=social)  ![GitHub stars](https://img.shields.io/github/stars/jeffotoni/gocache) 
 ---
 
-## 🚀 About GoCache
+## 🚀 About gocache
 
 **GoCache** is a high-performance, **sharded** in-memory cache for Go applications, built for **speed and efficiency**. This implementation is **optimized for concurrent read/write operations**, leveraging **sharding, lock optimizations, and expiration management** to outperform other Go-based caches.
 
-## 🔥 **Why use GoCache?**  
+## 🔥 **Why use gocache?**  
 ✅ **Ultra-fast read & write operations**  
 ✅ **Sharded architecture for minimal lock contention**  
 ✅ **Automatic expiration & cleanup of stale data**  
@@ -43,7 +37,7 @@ func main() {
 	cache := gocache.New(10 * time.Minute)
 	
 	// Store items in cache
-	cache.Set("key1", "Hello, GoCache!", gocache.DefaultExpiration)
+	cache.Set("key1", "Hello, gocache!", gocache.DefaultExpiration)
 	cache.Set("key2", 12345, gocache.DefaultExpiration)
 
 	// Retrieve items
@@ -122,7 +116,7 @@ cache.Delete("key")
 
 ## 🤝 Contributing
 
-## 🚀 Want to improve GoCache? Follow these simple steps:
+**🚀 Want to improve gocache? Follow these simple steps:**
 
  1️⃣ Fork this repo and add your own cache optimizations.
 
