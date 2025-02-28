@@ -1,8 +1,8 @@
 # ⚡ gocache – High-Performance 
 
 [![GoDoc](https://godoc.org/github.com/jeffotoni/gocache?status.svg)](https://godoc.org/github.com/jeffotoni/gocache) [![Go Report](https://goreportcard.com/badge/github.com/jeffotoni/gocache)](https://goreportcard.com/report/github.com/jeffotoni/gocache) [![License](https://img.shields.io/github/license/jeffotoni/gocache)](https://github.com/jeffotoni/gocache/blob/main/LICENSE) ![GitHub last commit](https://img.shields.io/github/last-commit/jeffotoni/gocache) ![GitHub contributors](https://img.shields.io/github/contributors/jeffotoni/gocache)
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jeffotoni/gocache/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/jeffotoni/gocache/tree/main) 
-![Coveralls](https://img.shields.io/coverallsCoverage/github/jeffotoni/gocache)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/jeffotoni/gocache/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/jeffotoni/gocache/tree/main)
+[![Coverage Status](https://coveralls.io/repos/github/jeffotoni/gocache/badge.svg)](https://coveralls.io/github/jeffotoni/gocache)
 ![GitHub stars](https://img.shields.io/github/forks/jeffotoni/gocache?style=social) 
 ![GitHub stars](https://img.shields.io/github/stars/jeffotoni/gocache)
 
