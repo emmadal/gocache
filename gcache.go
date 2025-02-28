@@ -1,3 +1,6 @@
+// Package gocache provides a cache storage solution with expiration handling.
+// It is designed for high-performance applications that require fast data retrieval
+// with minimal contention.
 package gocache
 
 import (
