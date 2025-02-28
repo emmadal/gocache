@@ -1,0 +1,27 @@
+mode: set
+github.com/jeffotoni/gocache/gcache.go:42.36,44.33 2 1
+github.com/jeffotoni/gocache/gcache.go:44.33,49.3 1 1
+github.com/jeffotoni/gocache/gcache.go:50.2,50.13 1 1
+github.com/jeffotoni/gocache/gcache.go:50.13,52.3 1 1
+github.com/jeffotoni/gocache/gcache.go:53.2,53.10 1 1
+github.com/jeffotoni/gocache/gcache.go:57.44,59.32 2 1
+github.com/jeffotoni/gocache/gcache.go:59.32,62.3 2 1
+github.com/jeffotoni/gocache/gcache.go:63.2,63.10 1 1
+github.com/jeffotoni/gocache/gcache.go:67.43,69.2 1 1
+github.com/jeffotoni/gocache/gcache.go:72.71,74.30 2 1
+github.com/jeffotoni/gocache/gcache.go:74.30,76.3 1 1
+github.com/jeffotoni/gocache/gcache.go:77.2,77.13 1 1
+github.com/jeffotoni/gocache/gcache.go:77.13,79.3 1 1
+github.com/jeffotoni/gocache/gcache.go:81.2,88.16 7 1
+github.com/jeffotoni/gocache/gcache.go:93.53,101.13 6 1
+github.com/jeffotoni/gocache/gcache.go:101.13,103.3 1 1
+github.com/jeffotoni/gocache/gcache.go:105.2,105.62 1 1
+github.com/jeffotoni/gocache/gcache.go:105.62,108.3 2 1
+github.com/jeffotoni/gocache/gcache.go:110.2,110.25 1 1
+github.com/jeffotoni/gocache/gcache.go:114.36,121.2 5 1
+github.com/jeffotoni/gocache/gcache.go:124.27,128.19 3 1
+github.com/jeffotoni/gocache/gcache.go:128.19,130.31 2 1
+github.com/jeffotoni/gocache/gcache.go:130.31,132.34 2 1
+github.com/jeffotoni/gocache/gcache.go:132.34,134.47 2 1
+github.com/jeffotoni/gocache/gcache.go:134.47,137.6 2 1
+github.com/jeffotoni/gocache/gcache.go:139.4,139.18 1 1
