@@ -98,6 +98,10 @@ func main() {
 | **ristretto**          | 30,257,541       | 352.3 ns/op    | 10,055,701       | 547.8 ns/op        | 🧠 TinyLFU eviction, high allocation per op       |
 | **bigcache**           | 30,260,250       | 320.6 ns/op    | 14,382,721       | 354.6 ns/op        | 🔥 Very consistent, low GC overhead               |
 
+
+![Cache Benchmark Comparison](./graphic-v1.png)
+
+
 ### 🚀 1-Second Benchmarks
 
 ```go
