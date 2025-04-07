@@ -81,7 +81,22 @@ func main() {
 }
 ```
 
-## ⚡ Benchmark Results
+## ⚡ Benchmark Results now with Risttreto, BigCache, Go-cache e Freecache
+
+### 🚀 5-Second Benchmarks
+
+| **Implementation**     | **Set Ops**     | **Set ns/op** | **Set/Get Ops** | **Set/Get ns/op** | **Observations**                                 |
+|------------------------|------------------|----------------|------------------|--------------------|--------------------------------------------------|
+| **gocache V1**         | 28,414,197       | 338.6 ns/op    | 22,687,808       | 294.9 ns/op        | Baseline version — decent speed, moderate allocs |
+| **gocache V8**         | 26,022,742       | 364.5 ns/op    | 15,105,789       | 393.6 ns/op        | High memory cost, TTL enabled                    |
+| **gocache V9**         | 44,026,141       | 265.4 ns/op    | 23,528,972       | 270.0 ns/op        | 🏆 **Fastest write throughput**                  |
+| **gocache V10**        | 19,749,439       | 393.2 ns/op    | 16,217,510       | 495.9 ns/op        | ❌ Higher allocation and latency                  |
+| **gocache V11 (Short)**| 39,719,458       | 264.2 ns/op    | 23,308,189       | 265.4 ns/op        | ⚡ Short TTL — very fast overall                  |
+| **gocache V11 (Long)** | 22,334,095       | 348.8 ns/op    | 18,338,124       | 319.7 ns/op        | Balanced long TTL setup                          |
+| **go-cache**           | 25,669,981       | 392.5 ns/op    | 20,485,022       | 306.0 ns/op        | Stable, but slower than newer gocache versions   |
+| **freecache**          | 41,543,706       | 380.3 ns/op    | 14,433,577       | 425.2 ns/op        | 🚀 Fast writes, significantly slower reads        |
+| **ristretto**          | 30,257,541       | 352.3 ns/op    | 10,055,701       | 547.8 ns/op        | 🧠 TinyLFU eviction, high allocation per op       |
+| **bigcache**           | 30,260,250       | 320.6 ns/op    | 14,382,721       | 354.6 ns/op        | 🔥 Very consistent, low GC overhead               |
 
 ### 🚀 1-Second Benchmarks
 
