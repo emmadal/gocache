@@ -133,3 +133,30 @@ func TestCacheExpiration(t *testing.T) {
 		t.Errorf("I expected the item to be expired and removed, but it still exists %v", result)
 	}
 }
+
+// TestNew_DefaultExpiration test Default TTL
+func TestNew_DefaultExpiration(t *testing.T) {
+	c := New() // Without TTL
+
+	if c == nil {
+		t.Fatal("Expected cache instance, got nil")
+	}
+
+	if c.ttl != DefaultExpiration {
+		t.Errorf("Expected default TTL to be %v, got %v", DefaultExpiration, c.ttl)
+	}
+}
+
+// TestNew_WithCustomTTL test with TTL
+func TestNew_WithCustomTTL(t *testing.T) {
+	ttl := 100 * time.Millisecond
+	c := New(ttl) // With TTL
+
+	if c == nil {
+		t.Fatal("Expected cache instance, got nil")
+	}
+
+	if c.ttl != ttl {
+		t.Errorf("Expected TTL to be %v, got %v", ttl, c.ttl)
+	}
+}
