@@ -49,8 +49,8 @@ type shard struct {
 
 // Item represents a single cache entry.
 type Item struct {
-	value   interface{} // Stored value
-	expires int64       // Expiration timestamp
+	value   any   // Stored value
+	expires int64 // Expiration timestamp
 }
 
 // Cache is a sharded in-memory cache with expiration handling.
@@ -76,7 +76,7 @@ func New(ttlStr ...time.Duration) *Cache {
 			ttl = DefaultExpiration
 		}
 		instance = &Cache{ttl: ttl}
-		for i := 0; i < numShards; i++ {
+		for i := range numShards {
 			instance.shards[i] = &shard{
 				items:   make(map[uint32]*Item),
 				ringBuf: make([]ringNode, ringSize),
@@ -85,13 +85,12 @@ func New(ttlStr ...time.Duration) *Cache {
 		// Start the cleanup goroutine if needed
 		if ttl > 0 {
 			instance.cleanupMutex.Lock()
-			defer instance.cleanupMutex.Unlock()
-
 			// Check if cleanup has already been started
 			if !instance.cleanupStarted {
 				instance.cleanupStarted = true
 				go instance.cleanup()
 			}
+			instance.cleanupMutex.Unlock()
 		}
 	})
 	return instance
@@ -101,7 +100,7 @@ func New(ttlStr ...time.Duration) *Cache {
 // The hash ensures even distribution across shards.
 func (c *Cache) hashKey(key string) uint32 {
 	var h uint32
-	for i := 0; i < len(key); i++ {
+	for i := range len(key) {
 		h ^= uint32(key[i])
 		h *= 16777619
 	}
@@ -181,7 +180,7 @@ func (c *Cache) cleanup() {
 		now := time.Now().UnixNano()
 		for _, sh := range c.shards {
 			sh.mu.Lock()
-			for i := 0; i < ringSize; i++ {
+			for i := range ringSize {
 				node := &sh.ringBuf[i]
 				if node.expires > 0 && now > node.expires {
 					delete(sh.items, node.key)
