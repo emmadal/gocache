@@ -27,6 +27,12 @@ const (
 	ringSize = 4096
 )
 
+// Global variables for the singleton pattern
+var (
+	instance     *Cache
+	initInstance sync.Once
+)
+
 // ringNode represents an entry in the expiration ring buffer.
 type ringNode struct {
 	key     uint32 // Hashed key
@@ -49,32 +55,46 @@ type Item struct {
 
 // Cache is a sharded in-memory cache with expiration handling.
 type Cache struct {
-	shards [numShards]*shard // Array of shards to reduce contention
-	ttl    time.Duration     // Default time-to-live for cache entries
+	shards         [numShards]*shard // Array of shards to reduce contention
+	ttl            time.Duration     // Default time-to-live for cache entries
+	cleanupStarted bool              // Flag to track if cleanup has been started
+	cleanupMutex   sync.Mutex        // Mutex to protect the cleanupStarted flag
 }
 
 // New creates a new instance of Cache with the specified default TTL.
 // If the TTL is greater than 0, a cleanup goroutine is started to periodically remove expired items.
+// This function returns a singleton instance of Cache, ensuring it's initialized only once.
 func New(ttlStr ...time.Duration) *Cache {
-	var ttl time.Duration
-	if len(ttlStr) > 0 {
-		// Use the first duration provided
-		ttl = ttlStr[0]
-	} else {
-		// Fallback to DefaultExpiration if no parameter is passed
-		ttl = DefaultExpiration
-	}
-	c := &Cache{ttl: ttl}
-	for i := 0; i < numShards; i++ {
-		c.shards[i] = &shard{
-			items:   make(map[uint32]*Item),
-			ringBuf: make([]ringNode, ringSize),
+	// Use sync.Once to ensure the Cache is initialized only once
+	initInstance.Do(func() {
+		var ttl time.Duration
+		if len(ttlStr) > 0 {
+			// Use the first duration provided
+			ttl = ttlStr[0]
+		} else {
+			// Fallback to DefaultExpiration if no parameter is passed
+			ttl = DefaultExpiration
 		}
-	}
-	if ttl > 0 {
-		go c.cleanup()
-	}
-	return c
+		instance = &Cache{ttl: ttl}
+		for i := 0; i < numShards; i++ {
+			instance.shards[i] = &shard{
+				items:   make(map[uint32]*Item),
+				ringBuf: make([]ringNode, ringSize),
+			}
+		}
+		// Start the cleanup goroutine if needed
+		if ttl > 0 {
+			instance.cleanupMutex.Lock()
+			defer instance.cleanupMutex.Unlock()
+
+			// Check if cleanup has already been started
+			if !instance.cleanupStarted {
+				instance.cleanupStarted = true
+				go instance.cleanup()
+			}
+		}
+	})
+	return instance
 }
 
 // hashKey computes a simple FNV-1a hash from the string key.
