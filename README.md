@@ -21,6 +21,10 @@
 
 ---
 
+# gocache in action 💕🐧🚀
+
+![gocache demo](gif/gocache_demo.gif)
+
 ## 📦 Installation
 
 ```sh
